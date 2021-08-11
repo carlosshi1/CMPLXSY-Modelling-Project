@@ -1,4 +1,33 @@
+globals [
+  infected-count
+  HOSPITAL-COUNT
+  HOSPITAL-STAY-TIME
+  HOUSE-COUNT
+  OFFICE-COUNT
+  OFFICE-STAY-TIME
+  PARK-COUNT
+  PARK-STAY-TIME
+  MARKET-COUNT
+  MARKET-STAY-TIME
+]
 
+to setup
+  clear-all
+  reset-ticks
+
+  ;Global Variables initialization
+  set infected-count ceiling(initial-population * initial-infected-percentage / 100)
+  set HOSPITAL-COUNT 5
+  set HOSPITAL-STAY-TIME 30
+  set HOUSE-COUNT 10
+  set OFFICE-COUNT 2
+  set OFFICE-STAY-TIME 20
+  set MARKET-COUNT 1
+  set MARKET-STAY-TIME 10
+  set PARK-COUNT 1
+  set PARK-STAY-TIME 10
+
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 569
@@ -66,7 +95,7 @@ disease-chance
 disease-chance
 1
 100
-50.0
+49.0
 1
 1
 %
