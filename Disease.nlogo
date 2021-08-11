@@ -45,16 +45,16 @@ HORIZONTAL
 SLIDER
 228
 34
-400
+432
 67
-initial-infected
-initial-infected
+initial-infected-percentage
+initial-infected-percentage
 1
-60
+30
 30.0
 1
 1
-NIL
+%
 HORIZONTAL
 
 SLIDER
