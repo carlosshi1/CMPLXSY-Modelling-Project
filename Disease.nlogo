@@ -11,6 +11,9 @@ globals [
   MARKET-STAY-TIME
 ]
 
+breed [persons person]
+breed [houses house]
+
 to setup
   clear-all
   reset-ticks
@@ -26,6 +29,29 @@ to setup
   set MARKET-STAY-TIME 10
   set PARK-COUNT 1
   set PARK-STAY-TIME 10
+
+  ;setting up turtles
+  create-houses HOUSE-COUNT [
+    set shape "house"
+    set size 2
+    set color brown
+    setxy random-xcor random-ycor
+  ]
+
+  create-persons initial-population [
+    set shape "person"
+    set size 1
+    set color blue
+    move-to one-of houses
+  ]
+
+  ; Set green background
+  ask patches [
+    set pcolor green
+  ]
+end
+
+to go
 
 end
 @#$#@#$#@
