@@ -1,3 +1,5 @@
+extensions [array]
+
 globals [
   infected-count
   HOSPITAL-COUNT
@@ -9,6 +11,9 @@ globals [
   PARK-STAY-TIME
   MARKET-COUNT
   MARKET-STAY-TIME
+
+  HOUSE-COORDINATES-X
+  HOUSE-COORDINATES-Y
 ]
 
 breed [persons person]
@@ -30,13 +35,26 @@ to setup
   set PARK-COUNT 1
   set PARK-STAY-TIME 10
 
-  ;setting up turtles
-  create-houses HOUSE-COUNT [
+  ;Setting up array
+  set HOUSE-COORDINATES-X [-15 -12 -9 -6 -3 3 6 9 12 15]
+  set HOUSE-COORDINATES-Y [-15 -12 -9 -6 -3 3 6 9 12 15]
+  let x array:from-list HOUSE-COORDINATES-X
+  let y array:from-list HOUSE-COORDINATES-Y
+
+
+  ;Setting up turtles
+  let i 0
+  while[i < HOUSE-COUNT]
+  [create-houses 1 [
     set shape "house"
     set size 2
     set color brown
-    setxy random-xcor random-ycor
+    setxy array:item x i array:item y i
   ]
+  set i i + 1
+  ]
+
+
 
   create-persons initial-population [
     set shape "person"
