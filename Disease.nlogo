@@ -14,6 +14,14 @@ globals [
 
   HOUSE-COORDINATES-X
   HOUSE-COORDINATES-Y
+  HOSPITAL-COORDINATES-X
+  HOSPITAL-COORDINATES-Y
+  MARKET-COORDINATES-X
+  MARKET-COORDINATES-Y
+  OFFICE-COORDINATES-X
+  OFFICE-COORDINATES-Y
+  PARK-COORDINATES-X
+  PARK-COORDINATES-Y
 ]
 
 breed [persons person]
@@ -35,14 +43,13 @@ to setup
   set PARK-COUNT 1
   set PARK-STAY-TIME 10
 
-  ;Setting up array
+  ;Setting up turtles
   set HOUSE-COORDINATES-X [-15 -12 -9 -6 -3 3 6 9 12 15]
   set HOUSE-COORDINATES-Y [-15 -12 -9 -6 -3 3 6 9 12 15]
   let x array:from-list HOUSE-COORDINATES-X
   let y array:from-list HOUSE-COORDINATES-Y
 
 
-  ;Setting up turtles
   let i 0
   while[i < HOUSE-COUNT]
   [create-houses 1 [
@@ -54,6 +61,69 @@ to setup
   set i i + 1
   ]
 
+  set HOSPITAL-COORDINATES-X [-15 -9  3 6 15]
+  set HOSPITAL-COORDINATES-Y [15 9 -3 -6 -15]
+  set x array:from-list HOSPITAL-COORDINATES-X
+  set y array:from-list HOSPITAL-COORDINATES-Y
+
+  set i 0
+  while[i < HOSPITAL-COUNT]
+  [create-houses 1 [
+    set shape "building institution"
+    set size 2
+    set color brown
+    setxy array:item x i array:item y i
+  ]
+  set i i + 1
+  ]
+
+  set MARKET-COORDINATES-X [10]
+  set MARKET-COORDINATES-Y [4]
+  set x array:from-list MARKET-COORDINATES-X
+  set y array:from-list MARKET-COORDINATES-Y
+
+  set i 0
+  while[i < MARKET-COUNT]
+  [create-houses 1 [
+    set shape "building store"
+    set size 2
+    set color brown
+    setxy array:item x i array:item y i
+  ]
+  set i i + 1
+  ]
+
+  set OFFICE-COORDINATES-X [-3 14]
+  set OFFICE-COORDINATES-Y [0 3]
+  set x array:from-list OFFICE-COORDINATES-X
+  set y array:from-list OFFICE-COORDINATES-Y
+
+  set i 0
+  while[i < OFFICE-COUNT]
+  [create-houses 1 [
+    set shape "computer workstation"
+    set size 2
+    set color brown
+    setxy array:item x i array:item y i
+  ]
+  set i i + 1
+  ]
+
+  set PARK-COORDINATES-X [5]
+  set PARK-COORDINATES-Y [0]
+  set x array:from-list PARK-COORDINATES-X
+  set y array:from-list PARK-COORDINATES-Y
+
+  set i 0
+  while[i < PARK-COUNT]
+  [create-houses 1 [
+    set shape "square"
+    set size 2
+    set color brown
+    setxy array:item x i array:item y i
+  ]
+  set i i + 1
+  ]
 
 
   create-persons initial-population [
@@ -295,6 +365,53 @@ Circle -7500403 true true 110 75 80
 Line -7500403 true 150 100 80 30
 Line -7500403 true 150 100 220 30
 
+building institution
+false
+0
+Rectangle -7500403 true true 0 60 300 270
+Rectangle -16777216 true false 130 196 168 256
+Rectangle -16777216 false false 0 255 300 270
+Polygon -7500403 true true 0 60 150 15 300 60
+Polygon -16777216 false false 0 60 150 15 300 60
+Circle -1 true false 135 26 30
+Circle -16777216 false false 135 25 30
+Rectangle -16777216 false false 0 60 300 75
+Rectangle -16777216 false false 218 75 255 90
+Rectangle -16777216 false false 218 240 255 255
+Rectangle -16777216 false false 224 90 249 240
+Rectangle -16777216 false false 45 75 82 90
+Rectangle -16777216 false false 45 240 82 255
+Rectangle -16777216 false false 51 90 76 240
+Rectangle -16777216 false false 90 240 127 255
+Rectangle -16777216 false false 90 75 127 90
+Rectangle -16777216 false false 96 90 121 240
+Rectangle -16777216 false false 179 90 204 240
+Rectangle -16777216 false false 173 75 210 90
+Rectangle -16777216 false false 173 240 210 255
+Rectangle -16777216 false false 269 90 294 240
+Rectangle -16777216 false false 263 75 300 90
+Rectangle -16777216 false false 263 240 300 255
+Rectangle -16777216 false false 0 240 37 255
+Rectangle -16777216 false false 6 90 31 240
+Rectangle -16777216 false false 0 75 37 90
+Line -16777216 false 112 260 184 260
+Line -16777216 false 105 265 196 265
+
+building store
+false
+0
+Rectangle -7500403 true true 30 45 45 240
+Rectangle -16777216 false false 30 45 45 165
+Rectangle -7500403 true true 15 165 285 255
+Rectangle -16777216 true false 120 195 180 255
+Line -7500403 true 150 195 150 255
+Rectangle -16777216 true false 30 180 105 240
+Rectangle -16777216 true false 195 180 270 240
+Line -16777216 false 0 165 300 165
+Polygon -7500403 true true 0 165 45 135 60 90 240 90 255 135 300 165
+Rectangle -7500403 true true 0 0 75 45
+Rectangle -16777216 false false 0 0 75 45
+
 butterfly
 true
 0
@@ -327,6 +444,16 @@ false
 0
 Circle -7500403 true true 0 0 300
 Circle -16777216 true false 30 30 240
+
+computer workstation
+false
+0
+Rectangle -7500403 true true 60 45 240 180
+Polygon -7500403 true true 90 180 105 195 135 195 135 210 165 210 165 195 195 195 210 180
+Rectangle -16777216 true false 75 60 225 165
+Rectangle -7500403 true true 45 210 255 255
+Rectangle -10899396 true false 249 223 237 217
+Line -16777216 false 60 225 120 225
 
 cow
 false
