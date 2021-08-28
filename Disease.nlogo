@@ -7,7 +7,6 @@ globals [
   HOSPITAL-STAY-TIME
 
   HOUSE-COUNT
-  HOUSE-STAY-CHANCE
 
   OFFICE-COUNT
   OFFICE-STAY-TIME
@@ -57,7 +56,6 @@ to setup
   set HOSPITAL-STAY-TIME 30
 
   set HOUSE-COUNT 10
-  set HOUSE-STAY-CHANCE 40
 
   set OFFICE-COUNT 2
   set OFFICE-STAY-TIME 20
@@ -194,7 +192,7 @@ to go
 end
 
 to house-move
-  if random 100 >  HOUSE-STAY-CHANCE[
+  if random 100 <  chance-human-leave-house[
     set location OUTSIDE-KEY
     right random 20
     left random 20
