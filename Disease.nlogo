@@ -2,13 +2,19 @@ extensions [array]
 
 globals [
   infected-count
+
   HOSPITAL-COUNT
   HOSPITAL-STAY-TIME
+
   HOUSE-COUNT
+  HOUSE-STAY-CHANCE
+
   OFFICE-COUNT
   OFFICE-STAY-TIME
+
   PARK-COUNT
   PARK-STAY-TIME
+
   MARKET-COUNT
   MARKET-STAY-TIME
 
@@ -22,27 +28,51 @@ globals [
   OFFICE-COORDINATES-Y
   PARK-COORDINATES-X
   PARK-COORDINATES-Y
+
+  HOUSE-KEY
+  HOSPITAL-KEY
+  OUTSIDE-KEY
+  MARKET-KEY
+  OFFICE-KEY
+  PARK-KEY
 ]
 
 breed [persons person]
 breed [houses house]
+breed [hospitals hospital]
+breed [offices office]
+breed [markets market]
+breed [parks park]
 
-persons-own [isInfected]
+persons-own [isInfected location]
 to setup
   clear-all
   reset-ticks
 
   ;Global Variables initialization
   set infected-count ceiling(initial-population * initial-infected-percentage / 100)
+
   set HOSPITAL-COUNT 5
   set HOSPITAL-STAY-TIME 30
+
   set HOUSE-COUNT 10
+  set HOUSE-STAY-CHANCE 40
+
   set OFFICE-COUNT 2
   set OFFICE-STAY-TIME 20
+
   set MARKET-COUNT 1
   set MARKET-STAY-TIME 10
+
   set PARK-COUNT 1
   set PARK-STAY-TIME 10
+
+  set HOUSE-KEY 0
+  set OUTSIDE-KEY 1
+  set HOSPITAL-KEY 2
+  set MARKET-KEY 3
+  set OFFICE-KEY 4
+  set PARK-KEY 5
 
   ;Setting up turtles
   set HOUSE-COORDINATES-X [-15 -12 -9 -6 -3 3 6 9 12 15]
@@ -69,7 +99,7 @@ to setup
 
   set i 0
   while[i < HOSPITAL-COUNT]
-  [create-houses 1 [
+  [create-hospitals 1 [
     set shape "building institution"
     set size 2
     set color brown
@@ -85,7 +115,7 @@ to setup
 
   set i 0
   while[i < MARKET-COUNT]
-  [create-houses 1 [
+  [create-markets 1 [
     set shape "building store"
     set size 2
     set color brown
@@ -101,7 +131,7 @@ to setup
 
   set i 0
   while[i < OFFICE-COUNT]
-  [create-houses 1 [
+  [create-offices 1 [
     set shape "computer workstation"
     set size 2
     set color brown
@@ -117,7 +147,7 @@ to setup
 
   set i 0
   while[i < PARK-COUNT]
-  [create-houses 1 [
+  [create-parks 1 [
     set shape "square"
     set size 2
     set color brown
@@ -132,6 +162,7 @@ to setup
     set size 1
     set color blue
     set isInfected false
+    set location HOUSE-KEY
     move-to one-of houses
   ]
 
@@ -148,8 +179,25 @@ to setup
 end
 
 to go
-
+  ask persons[
+    (ifelse location = 0 [ house-move ]
+    location = 1 [ ]
+    location = 2 [ ]
+    location = 3 [ ]
+    location = 4 [ ]
+    location = 5 [ ])
+  ]
 end
+
+to house-move
+  if random 100 >  HOUSE-STAY-CHANCE[
+    set location OUTSIDE-KEY
+    right random 20
+    left random 20
+    forward 1
+  ]
+end
+
 @#$#@#$#@
 GRAPHICS-WINDOW
 569
