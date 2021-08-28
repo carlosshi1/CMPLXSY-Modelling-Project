@@ -164,6 +164,7 @@ to setup
     set isInfected false
     set location HOUSE-KEY
     move-to one-of houses
+    hide-turtle
   ]
 
   ; Set green background
@@ -175,6 +176,7 @@ to setup
     set color red
     set isInfected true
   ]
+
 
 end
 
@@ -195,9 +197,9 @@ to house-move
     right random 20
     left random 20
     forward 1
+    show-turtle
   ]
 end
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 569
