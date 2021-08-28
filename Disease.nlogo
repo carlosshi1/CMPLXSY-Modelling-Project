@@ -44,7 +44,7 @@ breed [offices office]
 breed [markets market]
 breed [parks park]
 
-persons-own [isInfected location]
+persons-own [isInfected location destination destination-index]
 to setup
   clear-all
   reset-ticks
@@ -66,14 +66,15 @@ to setup
   set PARK-COUNT 1
   set PARK-STAY-TIME 10
 
-  set HOUSE-KEY 0
-  set OUTSIDE-KEY 1
-  set HOSPITAL-KEY 2
-  set MARKET-KEY 3
-  set OFFICE-KEY 4
-  set PARK-KEY 5
+  set MARKET-KEY 0
+  set OFFICE-KEY 1
+  set PARK-KEY 2
+  set HOUSE-KEY 3
+  set OUTSIDE-KEY 4
+  set HOSPITAL-KEY 5
 
-  set LOCATION-STRING-KEY ["house" "outside" "hospital" "market" "office" "park"]
+
+  set LOCATION-STRING-KEY ["market" "office" "park" "house" "outside" "hospital"]
   set LOCATION-STRING-KEY array:from-list LOCATION-STRING-KEY
 
   ;Setting up turtles
@@ -194,14 +195,21 @@ end
 to house-move
   if random 100 <  chance-human-leave-house[
     set location OUTSIDE-KEY
-    right random 20
-    left random 20
+    set destination-index random 3
+    (ifelse destination-index = MARKET-KEY [set destination one-of markets]
+      destination-index = PARK-KEY [set destination one-of parks]
+      destination-index = OFFICE-KEY [set destination one-of offices])
+    face destination
     forward 1
     show-turtle
   ]
 end
 
 to outside-move
+  face destination forward 1
+  if distance destination < 0.5 [
+    set location destination-index
+    hide-turtle]
 end
 
 to hospital-move
