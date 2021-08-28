@@ -35,6 +35,7 @@ globals [
   MARKET-KEY
   OFFICE-KEY
   PARK-KEY
+  LOCATION-STRING-KEY
 ]
 
 breed [persons person]
@@ -73,6 +74,9 @@ to setup
   set MARKET-KEY 3
   set OFFICE-KEY 4
   set PARK-KEY 5
+
+  set LOCATION-STRING-KEY ["house" "outside" "hospital" "market" "office" "park"]
+  set LOCATION-STRING-KEY array:from-list LOCATION-STRING-KEY
 
   ;Setting up turtles
   set HOUSE-COORDINATES-X [-15 -12 -9 -6 -3 3 6 9 12 15]
@@ -181,14 +185,13 @@ to setup
 end
 
 to go
+
   ask persons[
-    (ifelse location = 0 [ house-move ]
-    location = 1 [ ]
-    location = 2 [ ]
-    location = 3 [ ]
-    location = 4 [ ]
-    location = 5 [ ])
+    let test word array:item LOCATION-STRING-KEY location "-move"
+    output-print test
+    run test
   ]
+  tick
 end
 
 to house-move
@@ -199,6 +202,21 @@ to house-move
     forward 1
     show-turtle
   ]
+end
+
+to outside-move
+end
+
+to hospital-move
+end
+
+to office-move
+end
+
+to market-move
+end
+
+to park-move
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
