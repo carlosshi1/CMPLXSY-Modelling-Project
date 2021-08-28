@@ -187,9 +187,8 @@ end
 to go
 
   ask persons[
-    let test word array:item LOCATION-STRING-KEY location "-move"
-    output-print test
-    run test
+    let person-command word array:item LOCATION-STRING-KEY location "-move"
+    run person-command
   ]
   tick
 end
