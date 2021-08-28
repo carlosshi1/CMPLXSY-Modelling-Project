@@ -27,6 +27,7 @@ globals [
 breed [persons person]
 breed [houses house]
 
+persons-own [isInfected]
 to setup
   clear-all
   reset-ticks
@@ -130,6 +131,7 @@ to setup
     set shape "person"
     set size 1
     set color blue
+    set isInfected false
     move-to one-of houses
   ]
 
@@ -137,6 +139,12 @@ to setup
   ask patches [
     set pcolor green
   ]
+
+  ask n-of infected-count persons[
+    set color red
+    set isInfected true
+  ]
+
 end
 
 to go
