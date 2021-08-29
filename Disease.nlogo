@@ -15,6 +15,8 @@ globals [
 
   MARKET-COUNT
 
+  DEATH-COUNT
+
   HOUSE-COORDINATES-X
   HOUSE-COORDINATES-Y
   HOSPITAL-COORDINATES-X
@@ -37,7 +39,6 @@ globals [
   SUSCEPTIBLE
   INFECTED
   RECOVERED
-  DEAD
 ]
 
 breed [persons person]
@@ -54,6 +55,7 @@ to setup
 
   ;Global Variables initialization
   set infected-count ceiling(initial-population * initial-infected-percentage / 100)
+  set DEATH-COUNT 0
 
   set HOSPITAL-COUNT 5
   set HOUSE-COUNT 10
@@ -71,7 +73,6 @@ to setup
   set SUSCEPTIBLE 0
   set INFECTED 1
   set RECOVERED 2
-  set DEAD 3
 
   set LOCATION-STRING-KEY ["market" "office" "park" "house" "outside" "hospital"]
   set STAY-TIME [10 20 10 0 0 30]
@@ -259,7 +260,7 @@ to kill-infected
   ask persons [
     if state = INFECTED [
       if random 100 < death-chance [
-        set state DEAD
+        set DEATH-COUNT DEATH-COUNT + 1
         die
       ]
     ]
@@ -455,7 +456,7 @@ recovery-chance
 recovery-chance
 1
 100
-7.0
+4.0
 1
 1
 %
@@ -500,7 +501,7 @@ MONITOR
 354
 295
 Dead
-count persons with [state = dead]
+DEATH-COUNT
 17
 1
 11
@@ -524,7 +525,7 @@ PENS
 "susceptible" 1.0 0 -13345367 true "" "plot count persons with [state = susceptible]"
 "recovered" 1.0 0 -7500403 true "" "plot count persons with [state = recovered]"
 "infected" 1.0 0 -2674135 true "" "plot count persons with [state = infected]"
-"dead" 1.0 0 -10899396 true "" "plot count persons with [state = dead]"
+"dead" 1.0 0 -10899396 true "" "plot DEATH-COUNT"
 
 @#$#@#$#@
 ## WHAT IS IT?
