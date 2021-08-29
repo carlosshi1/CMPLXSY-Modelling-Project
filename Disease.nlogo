@@ -183,6 +183,7 @@ to go
         run person-command])
   ]
   spread-infection
+  kill-infected
   show-building-population-count
   tick
 end
@@ -237,14 +238,26 @@ to show-building-population-count
   ask offices[set label count persons-here with [destination-index = OFFICE-KEY]]
 end
 
+; Looks at the 8 surroundig patches of all infected persons and determines susceptible individuals will be infected
 to spread-infection
   ask persons [
     if state = INFECTED [
-      ask persons-on neighbors4 [
+      ask persons-on neighbors [
         if random 100 < disease-chance and state = SUSCEPTIBLE  [
           set state INFECTED
           set color red
         ]
+      ]
+    ]
+  ]
+end
+
+; Determines if an infected person will die
+to kill-infected
+  ask persons [
+    if state = INFECTED [
+      if random 100 < death-chance [
+        die
       ]
     ]
   ]
@@ -331,7 +344,7 @@ death-chance
 death-chance
 1
 80
-40.0
+7.0
 1
 1
 %
