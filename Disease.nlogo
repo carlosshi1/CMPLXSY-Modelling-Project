@@ -169,6 +169,7 @@ to setup
     set isInfected true
   ]
 
+  show-building-population-count
 
 end
 
@@ -178,6 +179,7 @@ to go
     let person-command word item location LOCATION-STRING-KEY "-move"
     run person-command
   ]
+  show-building-population-count
   tick
 end
 
@@ -211,6 +213,14 @@ to market-move
 end
 
 to park-move
+end
+
+to show-building-population-count
+  ask houses[set label count persons-here]
+  ask markets[set label count persons-here]
+  ask parks[set label count persons-here]
+  ask hospitals[set label count persons-here]
+  ask offices[set label count persons-here]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
