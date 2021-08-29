@@ -33,6 +33,10 @@ globals [
   OFFICE-KEY
   PARK-KEY
   LOCATION-STRING-KEY
+
+  SUSCEPTIBLE
+  INFECTED
+  RECOVERED
 ]
 
 breed [persons person]
@@ -42,7 +46,7 @@ breed [offices office]
 breed [markets market]
 breed [parks park]
 
-persons-own [isInfected location destination destination-index stay-counter my-home]
+persons-own [state location destination destination-index stay-counter my-home]
 to setup
   clear-all
   reset-ticks
@@ -62,6 +66,10 @@ to setup
   set HOUSE-KEY 3
   set OUTSIDE-KEY 4
   set HOSPITAL-KEY 5
+
+  set SUSCEPTIBLE 0
+  set INFECTED 1
+  set RECOVERED 2
 
 
   set LOCATION-STRING-KEY ["market" "office" "park" "house" "outside" "hospital"]
@@ -144,7 +152,7 @@ to setup
     set shape "person"
     set size 1
     set color blue
-    set isInfected false
+    set state SUSCEPTIBLE
     set location HOUSE-KEY
     set destination-index HOUSE-KEY
     set destination nobody
@@ -160,7 +168,7 @@ to setup
 
   ask n-of infected-count persons[
     set color red
-    set isInfected true
+    set state INFECTED
   ]
 
   show-building-population-count
@@ -231,10 +239,10 @@ end
 
 to spread-infection
   ask persons [
-    if isInfected = true [
+    if state = INFECTED [
       ask persons-on neighbors4 [
-        if random 100 < disease-chance [
-          set isInfected true
+        if random 100 < disease-chance and state = SUSCEPTIBLE  [
+          set state INFECTED
           set color red
         ]
       ]
