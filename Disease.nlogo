@@ -306,10 +306,10 @@ ticks
 30.0
 
 SLIDER
-31
-34
-203
-67
+22
+25
+222
+58
 initial-population
 initial-population
 10
@@ -321,10 +321,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-228
-34
-432
-67
+237
+25
+438
+58
 initial-infected-percentage
 initial-infected-percentage
 1
@@ -336,10 +336,10 @@ initial-infected-percentage
 HORIZONTAL
 
 SLIDER
-29
-94
-201
-127
+22
+70
+221
+103
 disease-chance
 disease-chance
 1
@@ -351,10 +351,10 @@ disease-chance
 HORIZONTAL
 
 SLIDER
-224
-94
-396
-127
+238
+70
+439
+103
 death-chance
 death-chance
 1
@@ -366,10 +366,10 @@ death-chance
 HORIZONTAL
 
 SLIDER
-27
-161
-246
-194
+22
+113
+222
+146
 chance-human-leave-house
 chance-human-leave-house
 1
@@ -381,10 +381,10 @@ chance-human-leave-house
 HORIZONTAL
 
 SLIDER
-27
-227
-199
-260
+22
+157
+221
+190
 hospital-capacity
 hospital-capacity
 1
@@ -396,10 +396,10 @@ NIL
 HORIZONTAL
 
 BUTTON
-29
-304
-92
-337
+21
+203
+84
+236
 NIL
 setup
 NIL
@@ -413,10 +413,10 @@ NIL
 1
 
 BUTTON
-103
-304
-166
-337
+95
+203
+158
+236
 NIL
 go
 T
@@ -430,10 +430,10 @@ NIL
 1
 
 BUTTON
-176
-304
-262
-337
+168
+203
+254
+236
 step-over
 go
 NIL
@@ -447,10 +447,10 @@ NIL
 1
 
 SLIDER
-272
-161
-444
-194
+237
+113
+438
+146
 recovery-chance
 recovery-chance
 1
@@ -462,10 +462,10 @@ recovery-chance
 HORIZONTAL
 
 MONITOR
-27
-377
-102
-422
+21
+250
+96
+295
 Susceptible
 count persons with [state = susceptible]
 17
@@ -473,10 +473,10 @@ count persons with [state = susceptible]
 11
 
 MONITOR
-112
-377
-189
-422
+106
+250
+183
+295
 Infected
 count persons with [state = infected]
 17
@@ -484,10 +484,10 @@ count persons with [state = infected]
 11
 
 MONITOR
-199
-377
-275
-422
+193
+250
+269
+295
 Recovered
 count persons with [state = recovered]
 17
@@ -495,15 +495,36 @@ count persons with [state = recovered]
 11
 
 MONITOR
-285
-377
-360
-422
+279
+250
+354
+295
 Dead
 count persons with [state = dead]
 17
 1
 11
+
+PLOT
+21
+299
+353
+449
+Population Count
+tick
+count
+0.0
+10.0
+0.0
+10.0
+true
+true
+"" ""
+PENS
+"susceptible" 1.0 0 -13345367 true "" "plot count persons with [state = susceptible]"
+"recovered" 1.0 0 -7500403 true "" "plot count persons with [state = recovered]"
+"infected" 1.0 0 -2674135 true "" "plot count persons with [state = infected]"
+"dead" 1.0 0 -10899396 true "" "plot count persons with [state = dead]"
 
 @#$#@#$#@
 ## WHAT IS IT?
