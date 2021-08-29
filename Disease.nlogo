@@ -155,6 +155,8 @@ to setup
     set color blue
     set isInfected false
     set location HOUSE-KEY
+    set destination-index HOUSE-KEY
+    set destination nobody
     move-to one-of houses
     hide-turtle
   ]
@@ -216,11 +218,11 @@ to park-move
 end
 
 to show-building-population-count
-  ask houses[set label count persons-here]
-  ask markets[set label count persons-here]
-  ask parks[set label count persons-here]
-  ask hospitals[set label count persons-here]
-  ask offices[set label count persons-here]
+  ask houses[set label count persons-here with [destination-index = HOUSE-KEY]]
+  ask markets[set label count persons-here with [destination-index = MARKET-KEY]]
+  ask parks[set label count persons-here with [destination-index = PARK-KEY]]
+  ask hospitals[set label count persons-here with [destination-index = HOSPITAL-KEY]]
+  ask offices[set label count persons-here with [destination-index = OFFICE-KEY]]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
