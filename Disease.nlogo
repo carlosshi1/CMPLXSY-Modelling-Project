@@ -174,6 +174,7 @@ to go
     [let person-command word item location LOCATION-STRING-KEY "-move"
         run person-command])
   ]
+  spread-infection
   show-building-population-count
   tick
 end
@@ -227,6 +228,19 @@ to show-building-population-count
   ask hospitals[set label count persons-here with [destination-index = HOSPITAL-KEY]]
   ask offices[set label count persons-here with [destination-index = OFFICE-KEY]]
 end
+
+to spread-infection
+  ask persons [
+    if isInfected = true [
+      ask persons-on neighbors4 [
+        if random 100 < disease-chance [
+          set isInfected true
+          set color red
+        ]
+      ]
+    ]
+  ]
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 569
@@ -249,8 +263,8 @@ GRAPHICS-WINDOW
 16
 -16
 16
-0
-0
+1
+1
 1
 ticks
 30.0
@@ -264,7 +278,7 @@ initial-population
 initial-population
 10
 200
-95.0
+200.0
 1
 1
 NIL
@@ -294,7 +308,7 @@ disease-chance
 disease-chance
 1
 100
-49.0
+10.0
 1
 1
 %
