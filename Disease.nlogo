@@ -37,6 +37,7 @@ globals [
   SUSCEPTIBLE
   INFECTED
   RECOVERED
+  DEAD
 ]
 
 breed [persons person]
@@ -70,7 +71,7 @@ to setup
   set SUSCEPTIBLE 0
   set INFECTED 1
   set RECOVERED 2
-
+  set DEAD 3
 
   set LOCATION-STRING-KEY ["market" "office" "park" "house" "outside" "hospital"]
   set STAY-TIME [10 20 10 0 0 30]
@@ -258,6 +259,7 @@ to kill-infected
   ask persons [
     if state = INFECTED [
       if random 100 < death-chance [
+        set state DEAD
         die
       ]
     ]
@@ -411,10 +413,10 @@ NIL
 1
 
 BUTTON
-123
-305
-186
-338
+103
+304
+166
+337
 NIL
 go
 T
@@ -428,10 +430,10 @@ NIL
 1
 
 BUTTON
-60
-358
-146
-391
+176
+304
+262
+337
 step-over
 go
 NIL
@@ -458,6 +460,50 @@ recovery-chance
 1
 %
 HORIZONTAL
+
+MONITOR
+27
+377
+102
+422
+Susceptible
+count persons with [state = susceptible]
+17
+1
+11
+
+MONITOR
+112
+377
+189
+422
+Infected
+count persons with [state = infected]
+17
+1
+11
+
+MONITOR
+199
+377
+275
+422
+Recovered
+count persons with [state = recovered]
+17
+1
+11
+
+MONITOR
+285
+377
+360
+422
+Dead
+count persons with [state = dead]
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
