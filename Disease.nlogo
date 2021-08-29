@@ -75,13 +75,10 @@ to setup
 
 
   set LOCATION-STRING-KEY ["market" "office" "park" "house" "outside" "hospital"]
-  set LOCATION-STRING-KEY array:from-list LOCATION-STRING-KEY
 
   ;Setting up turtles
   set HOUSE-COORDINATES-X [-15 -12 -9 -6 -3 3 6 9 12 15]
   set HOUSE-COORDINATES-Y [-15 -12 -9 -6 -3 3 6 9 12 15]
-  let x array:from-list HOUSE-COORDINATES-X
-  let y array:from-list HOUSE-COORDINATES-Y
 
 
   let i 0
@@ -90,15 +87,13 @@ to setup
     set shape "house"
     set size 2
     set color brown
-    setxy array:item x i array:item y i
+    setxy item i HOUSE-COORDINATES-X item i HOUSE-COORDINATES-Y
   ]
   set i i + 1
   ]
 
   set HOSPITAL-COORDINATES-X [-15 -9  3 6 15]
   set HOSPITAL-COORDINATES-Y [15 9 -3 -6 -15]
-  set x array:from-list HOSPITAL-COORDINATES-X
-  set y array:from-list HOSPITAL-COORDINATES-Y
 
   set i 0
   while[i < HOSPITAL-COUNT]
@@ -106,15 +101,13 @@ to setup
     set shape "building institution"
     set size 2
     set color brown
-    setxy array:item x i array:item y i
+    setxy item i HOSPITAL-COORDINATES-X item i HOSPITAL-COORDINATES-Y
   ]
   set i i + 1
   ]
 
   set MARKET-COORDINATES-X [10]
   set MARKET-COORDINATES-Y [4]
-  set x array:from-list MARKET-COORDINATES-X
-  set y array:from-list MARKET-COORDINATES-Y
 
   set i 0
   while[i < MARKET-COUNT]
@@ -122,15 +115,13 @@ to setup
     set shape "building store"
     set size 2
     set color brown
-    setxy array:item x i array:item y i
+    setxy item i MARKET-COORDINATES-X item i MARKET-COORDINATES-Y
   ]
   set i i + 1
   ]
 
   set OFFICE-COORDINATES-X [-3 14]
   set OFFICE-COORDINATES-Y [0 3]
-  set x array:from-list OFFICE-COORDINATES-X
-  set y array:from-list OFFICE-COORDINATES-Y
 
   set i 0
   while[i < OFFICE-COUNT]
@@ -138,15 +129,13 @@ to setup
     set shape "computer workstation"
     set size 2
     set color brown
-    setxy array:item x i array:item y i
+    setxy item i OFFICE-COORDINATES-X item i OFFICE-COORDINATES-Y
   ]
   set i i + 1
   ]
 
   set PARK-COORDINATES-X [5]
   set PARK-COORDINATES-Y [0]
-  set x array:from-list PARK-COORDINATES-X
-  set y array:from-list PARK-COORDINATES-Y
 
   set i 0
   while[i < PARK-COUNT]
@@ -154,7 +143,7 @@ to setup
     set shape "square"
     set size 2
     set color brown
-    setxy array:item x i array:item y i
+    setxy item i PARK-COORDINATES-X item i PARK-COORDINATES-Y
   ]
   set i i + 1
   ]
@@ -186,7 +175,7 @@ end
 to go
 
   ask persons[
-    let person-command word array:item LOCATION-STRING-KEY location "-move"
+    let person-command word item location LOCATION-STRING-KEY "-move"
     run person-command
   ]
   tick
