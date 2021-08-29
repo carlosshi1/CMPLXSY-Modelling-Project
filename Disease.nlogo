@@ -184,6 +184,7 @@ to go
   ]
   spread-infection
   kill-infected
+  recover-infected
   show-building-population-count
   tick
 end
@@ -262,6 +263,18 @@ to kill-infected
     ]
   ]
 end
+
+; Determines if an infected person will recover
+to recover-infected
+  ask persons [
+    if state = INFECTED [
+      if random 100 < recovery-chance [
+        set state RECOVERED
+        set color gray
+      ]
+    ]
+  ]
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 569
@@ -329,7 +342,7 @@ disease-chance
 disease-chance
 1
 100
-10.0
+9.0
 1
 1
 %
@@ -344,7 +357,7 @@ death-chance
 death-chance
 1
 80
-7.0
+4.0
 1
 1
 %
@@ -430,6 +443,21 @@ NIL
 NIL
 NIL
 1
+
+SLIDER
+272
+161
+444
+194
+recovery-chance
+recovery-chance
+1
+100
+7.0
+1
+1
+%
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
