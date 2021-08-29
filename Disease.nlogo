@@ -3,19 +3,17 @@ extensions [array]
 globals [
   infected-count
 
+  STAY-TIME
+
   HOSPITAL-COUNT
-  HOSPITAL-STAY-TIME
 
   HOUSE-COUNT
 
   OFFICE-COUNT
-  OFFICE-STAY-TIME
 
   PARK-COUNT
-  PARK-STAY-TIME
 
   MARKET-COUNT
-  MARKET-STAY-TIME
 
   HOUSE-COORDINATES-X
   HOUSE-COORDINATES-Y
@@ -44,7 +42,7 @@ breed [offices office]
 breed [markets market]
 breed [parks park]
 
-persons-own [isInfected location destination destination-index]
+persons-own [isInfected location destination destination-index stay-counter my-home]
 to setup
   clear-all
   reset-ticks
@@ -53,18 +51,10 @@ to setup
   set infected-count ceiling(initial-population * initial-infected-percentage / 100)
 
   set HOSPITAL-COUNT 5
-  set HOSPITAL-STAY-TIME 30
-
   set HOUSE-COUNT 10
-
   set OFFICE-COUNT 2
-  set OFFICE-STAY-TIME 20
-
   set MARKET-COUNT 1
-  set MARKET-STAY-TIME 10
-
   set PARK-COUNT 1
-  set PARK-STAY-TIME 10
 
   set MARKET-KEY 0
   set OFFICE-KEY 1
@@ -75,6 +65,7 @@ to setup
 
 
   set LOCATION-STRING-KEY ["market" "office" "park" "house" "outside" "hospital"]
+  set STAY-TIME [10 20 10 0 0 30]
 
   ;Setting up turtles
   set HOUSE-COORDINATES-X [-15 -12 -9 -6 -3 3 6 9 12 15]
@@ -158,6 +149,7 @@ to setup
     set destination-index HOUSE-KEY
     set destination nobody
     move-to one-of houses
+    set my-home patch-here
     hide-turtle
   ]
 
@@ -178,8 +170,9 @@ end
 to go
 
   ask persons[
-    let person-command word item location LOCATION-STRING-KEY "-move"
-    run person-command
+    (ifelse location < 3[market-park-office-move]
+    [let person-command word item location LOCATION-STRING-KEY "-move"
+        run person-command])
   ]
   show-building-population-count
   tick
@@ -194,27 +187,37 @@ to house-move
       destination-index = OFFICE-KEY [set destination one-of offices])
     face destination
     forward 1
-    show-turtle
   ]
 end
 
 to outside-move
+  show-turtle
   face destination forward 1
   if distance destination < 0.5 [
     set location destination-index
+    if destination-index <= 3[
+      set stay-counter item destination-index STAY-TIME]
     hide-turtle]
 end
 
 to hospital-move
+  (ifelse stay-counter = 0 [
+    set location OUTSIDE-KEY
+    set destination-index HOUSE-KEY
+    set destination my-home
+    face destination
+    forward 1]
+    [set stay-counter stay-counter - 1])
 end
 
-to office-move
-end
-
-to market-move
-end
-
-to park-move
+to market-park-office-move
+  (ifelse stay-counter = 0 [
+    set location OUTSIDE-KEY
+    set destination-index HOUSE-KEY
+    set destination my-home
+    face destination
+    forward 1]
+    [set stay-counter stay-counter - 1])
 end
 
 to show-building-population-count
