@@ -178,7 +178,7 @@ to setup
 end
 
 to go
-  if count persons with [state = infected] = 0 or DEATH-COUNT = initial-population [stop]
+  if count persons with [state = infected] = 0 [stop]
   ask persons[
     (ifelse location < 3[market-park-office-move]
     [let person-command word item location LOCATION-STRING-KEY "-move"
