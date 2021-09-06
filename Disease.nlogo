@@ -5,28 +5,13 @@ globals [
 
   STAY-TIME
 
-  HOSPITAL-COUNT
-
-  HOUSE-COUNT
-
-  OFFICE-COUNT
-
-  PARK-COUNT
-
-  MARKET-COUNT
-
   DEATH-COUNT
 
-  HOUSE-COORDINATES-X
-  HOUSE-COORDINATES-Y
-  HOSPITAL-COORDINATES-X
-  HOSPITAL-COORDINATES-Y
-  MARKET-COORDINATES-X
-  MARKET-COORDINATES-Y
-  OFFICE-COORDINATES-X
-  OFFICE-COORDINATES-Y
-  PARK-COORDINATES-X
-  PARK-COORDINATES-Y
+  HOSPITAL-COORDINATES
+  HOUSE-COORDINATES
+  MARKET-COORDINATES
+  OFFICE-COORDINATES
+  PARK-COORDINATES
 
   HOUSE-KEY
   HOSPITAL-KEY
@@ -35,6 +20,8 @@ globals [
   OFFICE-KEY
   PARK-KEY
   LOCATION-STRING-KEY
+  LOCATION-SIZES
+  LOCATION-COLORS
 
   SUSCEPTIBLE
   INFECTED
@@ -42,13 +29,8 @@ globals [
 ]
 
 breed [persons person]
-breed [houses house]
-breed [hospitals hospital]
-breed [offices office]
-breed [markets market]
-breed [parks park]
 
-persons-own [state location destination destination-index stay-counter my-home]
+persons-own [state location destination stay-counter my-home-coord destination-coord]
 to setup
   clear-all
   reset-ticks
@@ -56,12 +38,6 @@ to setup
   ;Global Variables initialization
   set infected-count ceiling(initial-population * initial-infected-percentage / 100)
   set DEATH-COUNT 0
-
-  set HOSPITAL-COUNT 5
-  set HOUSE-COUNT 10
-  set OFFICE-COUNT 2
-  set MARKET-COUNT 1
-  set PARK-COUNT 1
 
   set MARKET-KEY 0
   set OFFICE-KEY 1
@@ -75,80 +51,42 @@ to setup
   set RECOVERED 2
 
   set LOCATION-STRING-KEY ["market" "office" "park" "house" "outside" "hospital"]
-  set STAY-TIME [10 20 10 0 0 30]
 
-  ;Setting up turtles
-  set HOUSE-COORDINATES-X [-15 -12 -9 -6 -3 3 6 9 12 15]
-  set HOUSE-COORDINATES-Y [-15 -12 -9 -6 -3 3 6 9 12 15]
+  set STAY-TIME [60 120 60 0 0 30]
+  set LOCATION-SIZES [[23 7] [15 7] [23 23] [3 3] [] [15 7]]
+  set LOCATION-COLORS [black pink lime brown green violet]
 
-
-  let i 0
-  while[i < HOUSE-COUNT]
-  [create-houses 1 [
-    set shape "house"
-    set size 2
-    set color brown
-    setxy item i HOUSE-COORDINATES-X item i HOUSE-COORDINATES-Y
-  ]
-  set i i + 1
+  ; Set outside color
+  ask patches [
+    set pcolor item OUTSIDE-KEY LOCATION-COLORS
   ]
 
-  set HOSPITAL-COORDINATES-X [-15 -9  3 6 15]
-  set HOSPITAL-COORDINATES-Y [15 9 -3 -6 -15]
-
-  set i 0
-  while[i < HOSPITAL-COUNT]
-  [create-hospitals 1 [
-    set shape "building institution"
-    set size 2
-    set color brown
-    setxy item i HOSPITAL-COORDINATES-X item i HOSPITAL-COORDINATES-Y
+  ;Add houses
+  set HOUSE-COORDINATES  [
+    [-30 30] [-26 30] [-22 30] [-18 30] [-14 30] [-30 26] [-26 26] [-22 26] [-18 26] [-14 26]
+    [-10 30] [-6 30] [-2 30] [2 30] [6 30] [-10 26] [-6 26] [-2 26] [2 26] [6 26]
+    [10 30] [14 30] [18 30] [22 30] [26 30] [30 30] [10 26] [14 26] [18 26] [22 26] [26 26] [30 26]
+    [-30 6] [-26 6] [-22 6] [-18 6] [-14 6] [-30 2] [-26 2] [-22 2] [-18 2] [-14 2]
+    [-10 6] [-6 6] [-2 6] [2 6] [6 6] [-10 2] [-6 2] [-2 2] [2 2] [6 2]
+    [10 6] [14 6] [18 6] [22 6] [26 6] [30 6] [10 2] [14 2] [18 2] [22 2] [26 2] [30 2]
   ]
-  set i i + 1
-  ]
+  (foreach HOUSE-COORDINATES [[coord] -> render-location coord (item HOUSE-KEY LOCATION-SIZES) (item HOUSE-KEY LOCATION-COLORS) ""])
 
-  set MARKET-COORDINATES-X [10]
-  set MARKET-COORDINATES-Y [4]
+  ; Add hospitals
+  set HOSPITAL-COORDINATES [[-24 16] [-24 -22] [24 -22]]
+  (foreach HOSPITAL-COORDINATES [[coord] -> render-location coord (item HOSPITAL-KEY LOCATION-SIZES) (item HOSPITAL-KEY LOCATION-COLORS) "Hospital"])
 
-  set i 0
-  while[i < MARKET-COUNT]
-  [create-markets 1 [
-    set shape "building store"
-    set size 2
-    set color brown
-    setxy item i MARKET-COORDINATES-X item i MARKET-COORDINATES-Y
-  ]
-  set i i + 1
-  ]
+  ; Add market
+  set MARKET-COORDINATES [[0 16]]
+  (foreach MARKET-COORDINATES [[coord] -> render-location coord (item MARKET-KEY LOCATION-SIZES) (item MARKET-KEY LOCATION-COLORS) "Market"])
 
-  set OFFICE-COORDINATES-X [-3 14]
-  set OFFICE-COORDINATES-Y [0 3]
+  ; add offices
+  set OFFICE-COORDINATES [[24 16] [24 -8] [-24 -8]]
+  (foreach OFFICE-COORDINATES [[coord] -> render-location coord (item OFFICE-KEY LOCATION-SIZES) (item OFFICE-KEY LOCATION-COLORS) "Office"])
 
-  set i 0
-  while[i < OFFICE-COUNT]
-  [create-offices 1 [
-    set shape "computer workstation"
-    set size 2
-    set color brown
-    setxy item i OFFICE-COORDINATES-X item i OFFICE-COORDINATES-Y
-  ]
-  set i i + 1
-  ]
-
-  set PARK-COORDINATES-X [5]
-  set PARK-COORDINATES-Y [0]
-
-  set i 0
-  while[i < PARK-COUNT]
-  [create-parks 1 [
-    set shape "square"
-    set size 2
-    set color brown
-    setxy item i PARK-COORDINATES-X item i PARK-COORDINATES-Y
-  ]
-  set i i + 1
-  ]
-
+  ; add parks
+  set PARK-COORDINATES [[0 -16]]
+  (foreach PARK-COORDINATES [[coord] -> render-location coord (item PARK-KEY LOCATION-SIZES) (item PARK-KEY LOCATION-COLORS) "Park"])
 
   create-persons initial-population [
     set shape "person"
@@ -156,100 +94,135 @@ to setup
     set color blue
     set state SUSCEPTIBLE
     set location HOUSE-KEY
-    set destination-index HOUSE-KEY
     set destination nobody
-    move-to one-of houses
-    set my-home patch-here
-    hide-turtle
+    set my-home-coord one-of HOUSE-COORDINATES
+    move-to patch (item 0 my-home-coord) (item 1 my-home-coord)
   ]
 
-  ; Set green background
-  ask patches [
-    set pcolor green
-  ]
 
   ask n-of infected-count persons[
     set color red
     set state INFECTED
   ]
 
-  show-building-population-count
+end
+
+to render-location [coord dims patch-color patch-label]
+  let height item 1 dims
+  let width item 0 dims
+  let i item 1 coord - floor (height / 2)
+  repeat height [
+    let j item 0 coord - floor (width / 2)
+    repeat width [
+      ask patch j i [
+        set pcolor patch-color
+      ]
+      set j j + 1
+    ]
+    set i i + 1
+  ]
+
+  ask patch item 0 coord item 1 coord [
+    set plabel patch-label
+  ]
 
 end
 
 to go
   if count persons with [state = infected] = 0 [stop]
-  ask persons[
-    (ifelse location < 3[market-park-office-move]
-    [let person-command word item location LOCATION-STRING-KEY "-move"
-        run person-command])
-  ]
+
+  leave-location
+  move-inside
+  move-outside
+
   spread-infection
   kill-infected
   recover-infected
-  show-building-population-count
   tick
 end
 
-to house-move
-  if random 100 <  chance-human-leave-house[
-    set location OUTSIDE-KEY
-    set destination-index random 3
-    (ifelse destination-index = MARKET-KEY [set destination one-of markets]
-      destination-index = PARK-KEY [set destination one-of parks]
-      destination-index = OFFICE-KEY [set destination one-of offices])
-    face destination
-    forward 1
+; Determines if a person will leave the current location they are residing in
+to leave-location
+  ask persons with [location != OUTSIDE-KEY] [
+    ifelse location = HOUSE-KEY [
+      if random 100 < chance-human-leave-house [
+        set location OUTSIDE-KEY
+        set destination random 3
+        set destination-coord (get-random-dest-coord destination)
+      ]
+    ][
+      if stay-counter >= item location STAY-TIME [
+        set location OUTSIDE-KEY
+        set destination HOUSE-KEY
+        set destination-coord my-home-coord
+      ]
+    ]
   ]
 end
 
-to outside-move
-  show-turtle
-  face destination forward 1
-  if distance destination < 0.5 [
-    set location destination-index
-    if destination-index <= 3[
-      set stay-counter item destination-index STAY-TIME]
-    hide-turtle]
+; Moves people that are currently inside
+to move-inside
+  ask persons with [location != OUTSIDE-KEY][
+    let target one-of neighbors with [pcolor != (item OUTSIDE-KEY LOCATION-COLORS)]
+    face target
+    fd 1
+    if location != HOUSE-KEY [set stay-counter stay-counter + 1]
+  ]
 end
 
-to hospital-move
-  (ifelse stay-counter = 0 [
-    set location OUTSIDE-KEY
-    set destination-index HOUSE-KEY
-    set destination my-home
-    face destination
-    forward 1]
-    [set stay-counter stay-counter - 1])
+; Moves people that are currently outside toward their target destination
+to move-outside
+  ask persons with [location = OUTSIDE-KEY][
+    let dest-height item 1 (item destination LOCATION-SIZES)
+    let dest-x-cor (item 0 destination-coord)
+    let dest-y-cor (item 1 destination-coord) + floor (dest-height / 2) + 1
+    if ([pxcor] of patch-here = dest-x-cor) and ([pycor] of patch-here = dest-y-cor) [
+      facexy (item 0 destination-coord) (item 1 destination-coord)
+      fd 1
+      set stay-counter 0
+      set location destination
+      stop
+    ]
+    facexy dest-x-cor dest-y-cor
+    if [pcolor] of patch-here  = (item OUTSIDE-KEY LOCATION-COLORS)[
+      while [[pcolor] of patch-ahead 1 != (item OUTSIDE-KEY LOCATION-COLORS)][
+        right 1
+      ]
+    ]
+    fd 1
+  ]
 end
 
-to market-park-office-move
-  (ifelse stay-counter = 0 [
-    set location OUTSIDE-KEY
-    set destination-index HOUSE-KEY
-    set destination my-home
-    face destination
-    forward 1]
-    [set stay-counter stay-counter - 1])
-end
-
-to show-building-population-count
-  ask houses[set label count persons-here with [destination-index = HOUSE-KEY]]
-  ask markets[set label count persons-here with [destination-index = MARKET-KEY]]
-  ask parks[set label count persons-here with [destination-index = PARK-KEY]]
-  ask hospitals[set label count persons-here with [destination-index = HOSPITAL-KEY]]
-  ask offices[set label count persons-here with [destination-index = OFFICE-KEY]]
+; Gets a random coordinate of a location specified in the argument
+to-report get-random-dest-coord [location-key]
+  (ifelse
+    location-key = MARKET-KEY [
+      report one-of MARKET-COORDINATES
+    ]
+    location-key = OFFICE-KEY[
+      report one-of OFFICE-COORDINATES
+    ]
+    location-key = PARK-KEY[
+      report one-of PARK-COORDINATES
+    ]
+    location-key = HOSPITAL-KEY [
+      report one-of HOSPITAL-COORDINATES
+    ]
+    [
+      report one-of MARKET-COORDINATES
+    ]
+  )
 end
 
 ; Looks at the 8 surroundig patches of all infected persons and determines susceptible individuals will be infected
+; The infection can happen only if they are in the same location
 to spread-infection
-  ask persons [
-    if state = INFECTED [
-      ask persons-on neighbors [
-        if random 100 < disease-chance and state = SUSCEPTIBLE  [
-          set state INFECTED
-          set color red
-        ]
+  ask persons with [state = INFECTED] [
+    let current-location location
+    ask (persons-on neighbors) with [location = current-location] [
+      if random 100 < disease-chance and state = SUSCEPTIBLE  [
+        set state INFECTED
+        set color red
       ]
     ]
   ]
@@ -257,24 +230,20 @@ end
 
 ; Determines if an infected person will die
 to kill-infected
-  ask persons [
-    if state = INFECTED [
-      if random 100 < death-chance [
-        set DEATH-COUNT DEATH-COUNT + 1
-        die
-      ]
+  ask persons with [state = INFECTED] [
+    if random 100 < death-chance [
+      set DEATH-COUNT DEATH-COUNT + 1
+      die
     ]
   ]
 end
 
 ; Determines if an infected person will recover
 to recover-infected
-  ask persons [
-    if state = INFECTED [
-      if random 100 < recovery-chance [
-        set state RECOVERED
-        set color gray
-      ]
+  ask persons with [state = INFECTED] [
+    if random 100 < recovery-chance [
+      set state RECOVERED
+      set color gray
     ]
   ]
 end
@@ -282,11 +251,11 @@ end
 GRAPHICS-WINDOW
 569
 25
-1006
-463
+1097
+554
 -1
 -1
-13.0
+8.0
 1
 10
 1
@@ -296,10 +265,10 @@ GRAPHICS-WINDOW
 0
 0
 1
--16
-16
--16
-16
+-32
+32
+-32
+32
 1
 1
 1
@@ -345,7 +314,7 @@ disease-chance
 disease-chance
 1
 100
-9.0
+26.0
 1
 1
 %
