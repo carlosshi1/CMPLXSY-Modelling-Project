@@ -52,7 +52,7 @@ to setup
 
   set LOCATION-STRING-KEY ["market" "office" "park" "house" "outside" "hospital"]
 
-  set STAY-TIME [60 120 60 0 0 30]
+  set STAY-TIME [10 20 10 0 0 30]
   set LOCATION-SIZES [[23 7] [15 7] [23 23] [3 3] [] [15 7]]
   set LOCATION-COLORS [black pink lime brown green violet]
 
@@ -103,6 +103,9 @@ to setup
   ask n-of infected-count persons[
     set color red
     set state INFECTED
+    set location OUTSIDE-KEY
+    set destination HOSPITAL-KEY
+    set destination-coord (get-random-dest-coord HOSPITAL-KEY)
   ]
 
 end
@@ -151,7 +154,7 @@ to leave-location
         set destination-coord (get-random-dest-coord destination)
       ]
     ][
-      if stay-counter >= item location STAY-TIME [
+      if stay-counter >= item location STAY-TIME or (location = HOSPITAL-KEY and state = RECOVERED)[
         set location OUTSIDE-KEY
         set destination HOUSE-KEY
         set destination-coord my-home-coord
@@ -223,6 +226,9 @@ to spread-infection
       if random 100 < disease-chance and state = SUSCEPTIBLE  [
         set state INFECTED
         set color red
+        set location OUTSIDE-KEY
+        set destination HOSPITAL-KEY
+        set destination-coord (get-random-dest-coord HOSPITAL-KEY)
       ]
     ]
   ]
@@ -231,10 +237,21 @@ end
 ; Determines if an infected person will die
 to kill-infected
   ask persons with [state = INFECTED] [
-    if random 100 < death-chance [
-      set DEATH-COUNT DEATH-COUNT + 1
-      die
-    ]
+    (ifelse
+      location = HOSPITAL-KEY[
+        if random 100 < (death-chance / 2)[
+          set DEATH-COUNT DEATH-COUNT + 1
+          die
+        ]
+      ]
+      [
+        if random 100 < death-chance [
+          set DEATH-COUNT DEATH-COUNT + 1
+          die
+        ]
+      ]
+    )
+
   ]
 end
 
@@ -314,7 +331,7 @@ disease-chance
 disease-chance
 1
 100
-26.0
+10.0
 1
 1
 %
