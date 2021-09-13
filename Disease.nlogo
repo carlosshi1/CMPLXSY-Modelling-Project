@@ -22,6 +22,7 @@ globals [
   LOCATION-STRING-KEY
   LOCATION-SIZES
   LOCATION-COLORS
+  HOSPITAL-RESERVED-SLOTS
 
   SUSCEPTIBLE
   INFECTED
@@ -30,7 +31,7 @@ globals [
 
 breed [persons person]
 
-persons-own [state location destination stay-counter my-home-coord destination-coord]
+persons-own [state location location-coord destination stay-counter my-home-coord destination-coord]
 to setup
   clear-all
   reset-ticks
@@ -73,15 +74,21 @@ to setup
   (foreach HOUSE-COORDINATES [[coord] -> render-location coord (item HOUSE-KEY LOCATION-SIZES) (item HOUSE-KEY LOCATION-COLORS) ""])
 
   ; Add hospitals
-  set HOSPITAL-COORDINATES [[-24 16] [-24 -22] [24 -22]]
+  set HOSPITAL-COORDINATES [[-24 16] [24 -8] [-24 -8]]
   (foreach HOSPITAL-COORDINATES [[coord] -> render-location coord (item HOSPITAL-KEY LOCATION-SIZES) (item HOSPITAL-KEY LOCATION-COLORS) "Hospital"])
+  set HOSPITAL-RESERVED-SLOTS []
+  let i 0
+  repeat length HOSPITAL-COORDINATES [
+    set HOSPITAL-RESERVED-SLOTS insert-item i HOSPITAL-RESERVED-SLOTS 0
+  ]
+
 
   ; Add market
   set MARKET-COORDINATES [[0 16]]
   (foreach MARKET-COORDINATES [[coord] -> render-location coord (item MARKET-KEY LOCATION-SIZES) (item MARKET-KEY LOCATION-COLORS) "Market"])
 
   ; add offices
-  set OFFICE-COORDINATES [[24 16] [24 -8] [-24 -8]]
+  set OFFICE-COORDINATES [[24 16] [-24 -22] [24 -22] ]
   (foreach OFFICE-COORDINATES [[coord] -> render-location coord (item OFFICE-KEY LOCATION-SIZES) (item OFFICE-KEY LOCATION-COLORS) "Office"])
 
   ; add parks
@@ -96,6 +103,7 @@ to setup
     set location HOUSE-KEY
     set destination nobody
     set my-home-coord one-of HOUSE-COORDINATES
+    set location-coord my-home-coord
     move-to patch (item 0 my-home-coord) (item 1 my-home-coord)
   ]
 
@@ -103,9 +111,6 @@ to setup
   ask n-of infected-count persons[
     set color red
     set state INFECTED
-    set location OUTSIDE-KEY
-    set destination HOSPITAL-KEY
-    set destination-coord (get-random-dest-coord HOSPITAL-KEY)
   ]
 
 end
@@ -133,7 +138,7 @@ end
 
 to go
   if count persons with [state = infected] = 0 [stop]
-
+  reserve-hospital-slot
   leave-location
   move-inside
   move-outside
@@ -155,10 +160,39 @@ to leave-location
       ]
     ][
       if stay-counter >= item location STAY-TIME or (location = HOSPITAL-KEY and state = RECOVERED)[
+        if location = HOSPITAL-KEY [
+          let i (position location-coord HOSPITAL-COORDINATES)
+          if i != false[
+            set HOSPITAL-RESERVED-SLOTS replace-item i HOSPITAL-RESERVED-SLOTS ((item i HOSPITAL-RESERVED-SLOTS) - 1)
+          ]
+        ]
         set location OUTSIDE-KEY
         set destination HOUSE-KEY
         set destination-coord my-home-coord
+
       ]
+    ]
+  ]
+end
+
+; Asks all infected persons currently not in a hospital or going to a hospital to reserve a slot to the hospital if available
+to reserve-hospital-slot
+  ask persons with [(location != HOSPITAL-KEY or destination != HOSPITAL-KEY) and state = INFECTED][
+    let free-hospital-index -1
+    let i 0
+
+    repeat length HOSPITAL-RESERVED-SLOTS [
+      if item i HOSPITAL-RESERVED-SLOTS < hospital-capacity [
+        set free-hospital-index i
+      ]
+      set i i + 1
+    ]
+
+    if free-hospital-index != -1 [
+      set HOSPITAL-RESERVED-SLOTS replace-item free-hospital-index HOSPITAL-RESERVED-SLOTS ((item free-hospital-index HOSPITAL-RESERVED-SLOTS) + 1)
+      set location OUTSIDE-KEY
+      set destination HOSPITAL-KEY
+      set destination-coord (item free-hospital-index HOSPITAL-COORDINATES)
     ]
   ]
 end
@@ -184,6 +218,7 @@ to move-outside
       fd 1
       set stay-counter 0
       set location destination
+      set location-coord destination-coord
       stop
     ]
     facexy dest-x-cor dest-y-cor
@@ -226,9 +261,6 @@ to spread-infection
       if random 100 < disease-chance and state = SUSCEPTIBLE  [
         set state INFECTED
         set color red
-        set location OUTSIDE-KEY
-        set destination HOSPITAL-KEY
-        set destination-coord (get-random-dest-coord HOSPITAL-KEY)
       ]
     ]
   ]
@@ -237,21 +269,36 @@ end
 ; Determines if an infected person will die
 to kill-infected
   ask persons with [state = INFECTED] [
+    let is-dead false
     (ifelse
       location = HOSPITAL-KEY[
         if random 100 < (death-chance / 2)[
-          set DEATH-COUNT DEATH-COUNT + 1
-          die
+          set is-dead true
         ]
       ]
       [
         if random 100 < death-chance [
-          set DEATH-COUNT DEATH-COUNT + 1
-          die
+          set is-dead true
         ]
       ]
     )
 
+    if is-dead [
+      set DEATH-COUNT DEATH-COUNT + 1
+      if location = HOSPITAL-KEY or (location = OUTSIDE-KEY and destination = HOSPITAL-KEY) [
+        let i false
+        ifelse location = HOSPITAL-KEY[
+          set i (position location-coord HOSPITAL-COORDINATES)
+        ][
+          set i (position destination-coord HOSPITAL-COORDINATES)
+        ]
+
+        if i != false[
+          set HOSPITAL-RESERVED-SLOTS replace-item i HOSPITAL-RESERVED-SLOTS ((item i HOSPITAL-RESERVED-SLOTS) - 1)
+        ]
+      ]
+      die
+    ]
   ]
 end
 
@@ -376,7 +423,7 @@ hospital-capacity
 hospital-capacity
 1
 50
-25.0
+20.0
 1
 1
 NIL
