@@ -177,7 +177,7 @@ end
 
 ; Asks all infected persons currently not in a hospital or going to a hospital to reserve a slot to the hospital if available
 to reserve-hospital-slot
-  ask persons with [(location != HOSPITAL-KEY or destination != HOSPITAL-KEY) and state = INFECTED][
+  ask persons with [(location != HOSPITAL-KEY and destination != HOSPITAL-KEY) and state = INFECTED][
     let free-hospital-index -1
     let i 0
 
@@ -308,6 +308,23 @@ to recover-infected
     if random 100 < recovery-chance [
       set state RECOVERED
       set color gray
+
+      if location = HOSPITAL-KEY or (location = OUTSIDE-KEY and destination = HOSPITAL-KEY) [
+        let i false
+        ifelse location = HOSPITAL-KEY[
+          set i (position location-coord HOSPITAL-COORDINATES)
+        ][
+          set i (position destination-coord HOSPITAL-COORDINATES)
+        ]
+
+        if i != false[
+          set HOSPITAL-RESERVED-SLOTS replace-item i HOSPITAL-RESERVED-SLOTS ((item i HOSPITAL-RESERVED-SLOTS) - 1)
+        ]
+
+        set location OUTSIDE-KEY
+        set destination HOUSE-KEY
+        set destination-coord my-home-coord
+      ]
     ]
   ]
 end
@@ -393,7 +410,7 @@ death-chance
 death-chance
 1
 80
-4.0
+2.0
 1
 1
 %
